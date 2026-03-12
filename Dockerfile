@@ -41,9 +41,6 @@ COPY init_session.py .
 # Questo path va montato come volume persistente in Coolify
 RUN mkdir -p /app/sessions
 
-# Healthcheck: verifica che il processo Python sia vivo
-HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
-    CMD pgrep -f telegram_listener.py || exit 1
 
 # Avvio: loop infinito con riavvio automatico in caso di crash
 CMD ["sh", "-c", "while true; do python telegram_listener.py; echo 'Riavvio tra 5s...'; sleep 5; done"]
