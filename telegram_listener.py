@@ -20,10 +20,7 @@ from datetime import datetime
 import httpx
 from pyrogram import Client, filters
 from pyrogram.types import Message
-from pyrogram.errors import (
-    FloodWait,
-    ConnectionError as PyrogramConnectionError,
-)
+from pyrogram.errors import FloodWait
 
 from config import (
     API_ID,
