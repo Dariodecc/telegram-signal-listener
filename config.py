@@ -19,7 +19,7 @@ CANALI = [
 ]
 
 # Nome del file di sessione Pyrogram (senza estensione)
-SESSION_NAME = "telegram_listener"
+SESSION_NAME = "sessions/telegram_listener"
 
 # Timeout per le richieste HTTP al webhook (secondi)
 WEBHOOK_TIMEOUT = 30
