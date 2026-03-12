@@ -160,15 +160,8 @@ async def on_new_message(client: Client, message: Message):
     await send_to_webhook(payload)
 
 
-# ── Evento connessione ──────────────────────────────────────
-@app.on_connect()
-async def on_connect(client: Client):
-    logger.info("🔗 Connesso a Telegram!")
 
 
-@app.on_disconnect()
-async def on_disconnect(client: Client):
-    logger.warning("🔌 Disconnesso da Telegram. Pyrogram tenterà la riconnessione automatica...")
 
 
 # ── Main ─────────────────────────────────────────────────────
