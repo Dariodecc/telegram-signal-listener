@@ -1,0 +1,39 @@
+# ============================================================
+# Telegram Signal Listener - Docker Image
+# ============================================================
+# Multi-purpose: usato sia per l'init della sessione sia per
+# il listener in esecuzione continua.
+#
+# PRIMO AVVIO (autenticazione):
+#   docker exec -it <container> python init_session.py
+#
+# ESECUZIONE NORMALE:
+#   Il container parte automaticamente con telegram_listener.py
+# ============================================================
+
+FROM python:3.12-slim
+
+# Evita output bufferizzato (logs in tempo reale)
+ENV PYTHONUNBUFFERED=1
+
+WORKDIR /app
+
+# Installa dipendenze prima (cache Docker layer)
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copia il codice sorgente
+COPY config.py .
+COPY telegram_listener.py .
+COPY init_session.py .
+
+# La sessione viene salvata in /app/sessions/
+# Questo path va montato come volume persistente in Coolify
+RUN mkdir -p /app/sessions
+
+# Healthcheck: verifica che il processo Python sia vivo
+HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
+    CMD pgrep -f telegram_listener.py || exit 1
+
+# Avvio: loop infinito con riavvio automatico in caso di crash
+CMD ["sh", "-c", "while true; do python telegram_listener.py; echo 'Riavvio tra 5s...'; sleep 5; done"]

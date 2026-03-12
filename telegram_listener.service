@@ -1,0 +1,41 @@
+# ============================================================
+# Telegram Signal Listener - Systemd Service
+# ============================================================
+# Installazione:
+#   1. Copia questo file: sudo cp telegram_listener.service /etc/systemd/system/
+#   2. Ricarica systemd:  sudo systemctl daemon-reload
+#   3. Abilita all'avvio: sudo systemctl enable telegram_listener
+#   4. Avvia:             sudo systemctl start telegram_listener
+#   5. Controlla i log:   journalctl -u telegram_listener -f
+#
+# NOTA: Prima di abilitare il servizio, esegui init_session.py
+#       manualmente per creare il file .session
+# ============================================================
+
+[Unit]
+Description=Telegram Signal Listener - Forwarding to n8n webhook
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/telegram-signal-listener
+ExecStart=/opt/telegram-signal-listener/venv/bin/python telegram_listener.py
+Restart=always
+RestartSec=10
+
+# Limita i riavvii: max 5 in 60 secondi
+StartLimitIntervalSec=60
+StartLimitBurst=5
+
+# Environment
+Environment=PYTHONUNBUFFERED=1
+
+# Log su journald
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=telegram-listener
+
+[Install]
+WantedBy=multi-user.target
